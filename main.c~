@@ -1,0 +1,64 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#include "mergeSort.c" 
+#include "simpleCSVsorter.h"
+#include "sorter.c" 
+
+void traversal (char * dir, char* colName){
+DIR *de; 
+	struct dirent *entry; 
+	int counter = 0; 
+	de = opendir(dir);
+	int pid0 = 0; 
+	int pid1 = 0; 
+	if (de == NULL) {
+		printf("error: directory was nonexistant or non accessable.\n");
+		return; 
+	} 
+	
+	while((entry = readdir(de))!=NULL){
+		if ( strcmp (entry->d_name,".") == 0 || strcmp (entry->d_name,"..") ==0 )
+		continue; 
+		if(entry->d_type = DT_DIR){
+			pid0 = fork();
+			if (pid0 = 0){
+			printf("%d, ", getpid());
+			fflush(stdout);
+			char path[1024];
+			snprintf(path,sizeof(path),"%s/%s",dir,entry->d_name);
+			traversal(path,colName);
+			exit(0);
+			}
+		else {
+			char *str = entry->d_name; 
+			char ch =".";
+			char *ret; 
+			char *csv; 
+			ret = strrhcr(str,ch);
+			 if (strcmp(ret,csv) == 0){
+				counter++; 
+				pid1 = fork();
+				if(pid1 ==0){
+					printf("%d, ", getpid());
+					fflush(stdout);
+					char path[1024];
+					snprinf(path,sizeof(path),"%s/%s", dir,entry->d_name);
+					FILE *file = (fopen(path, "r");
+					sort(file,colName);
+					exit(0);
+
+				}
+			}
+			
+		} 
+		} 
+		
+	
+}  
+int main (int argc, char *argv[]){
+char * colName = argv[1]; 
+char * dir = argv[2]; 
+
+
+}
+

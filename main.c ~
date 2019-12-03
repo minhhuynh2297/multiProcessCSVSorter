@@ -1,0 +1,31 @@
+#include <stdlib.h> 
+#include <stdio.h> 
+#include <sys/types.h> 
+#include <dirent.h> 
+#include <unistd.h> 
+#include "helper.h"
+#include "mergesort.c"
+#include "simpleCSVsorter.h"
+#include "sorter.c"
+
+
+int counter;
+ 
+int main(int argc, int argv *[]){
+	char * column = argv[1];
+	if (argv[1] == NULL){
+		printf("error: need something to sort on\n");
+		exit(-1); 
+	} 
+	if (argv[2] == NULL){
+		printf("using current directory\n");
+		argv[2] = ".";
+		}
+ 	
+	processCounter = 1; 
+	double i = getpid();
+	printf("Initial PID: %d\n",i);
+	printf("PIDS of all child Processes: ");
+	fflush(stdout);
+	countP(directory);
+	printf("\n Number of Processes: %d",processCount);

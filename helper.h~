@@ -1,0 +1,108 @@
+void sorter( FILE *fp , char * col){
+	int countLL=-1;	
+	char *line;
+	line = malloc(10000 * sizeof(char));
+	FILE *fp = fopen(argv[1], "r"); //reads in the file; 
+	node* head=NULL;
+	node** ptr=&head;
+	fgets(line, 10000, fp);
+	writeFirstRow(ptr, line); //first row;
+	node** oldRow = &head;
+	while(!feof(fp)){
+		if(feof(fp)){
+			break;
+		}
+		fgets(line, 10000, fp);
+		node* newHead=NULL;
+		node** newRow=&newHead;
+		writeLL(newRow,line);	
+		countLL++;
+		connectLL(oldRow, newRow);
+		oldRow=&((*oldRow)->down);
+	} 
+	free(line);
+	node* sortedLL=NULL;
+	node** headLL=&sortedLL;
+	makeSortLL(headLL, ptr, col);
+	mergeSort(headLL);
+	printBox(headLL, ptr, col);
+	}
+
+void traverse(char* directory,coltosort){
+	 DIR *de; 
+	 struct dirent * entry; 
+	
+	dir = opendir(directory); 
+
+	int pid,pid1 = 0; 
+	
+	if(dir == NULL ) {
+		return; 
+	} 
+
+	while((entry = readdir(directory))!=NULL){
+		if(strcmp (entry->d_name,".") == 0 || strcmp (entry->d_name,"..") == 0 ){
+		continue; 
+		} 
+
+		if(entry -> d_type = DT_TYPE){
+			pid = fork(); 
+				if(pid1 == 0){ 
+				printf("%d\n",getpid());
+				char path [1024]; 
+				snprinf(path,sizeof(path),"%s\%s",directory,entry->d_name);
+				traverse(path,col);
+				exit(0);
+ 				}
+		}
+		else {
+ 			char * str = entry->d_name;
+			 char ch = ".";
+			 char *ret;
+ 			 char *csv;
+			 csv = ".csv";
+			ret = strrchr(str,ch);
+			if(strcmp(ret,csv)==0){
+			counter++; 
+			pid1 = fork();
+			printf("%d\n",getpid());
+			char path[1024];
+			snprintf(path,sizeof(path),"%s\%s",directory,de->d_name; 
+			FILE* file = fopen(path,"r");
+			sort(file,col);
+			exit(0);
+			} 
+			} 
+		}
+		if(pid!=0){
+			wait(0);
+		}
+		if(pid1 != 0){
+			while(counter >0){
+				wait(0);
+				counter--;
+			}
+		} 
+	return; 
+
+}  
+void CountP(char * directory){
+	DIR *dir; 
+	dir = opendir(directory);
+	
+	struct dirent *cp; 
+	
+		while ((cp=readir(dir)) != NULL) {
+				char path [1024];
+				snprintf(path,sizeof(path),"%s\%s" , directory, cp->d_name);
+				if(strcmp(cp->d_name,".") == 0 || strcmp(cp->d_name, "..") == 0 ){
+				continue;
+				}
+				if(cp->d_type = DT_DIR)){
+					processCounter ++; 
+					countP(path);
+					}
+				else if(cp ->d_type = csv...  ){
+					processCounter++;
+					}
+		}	

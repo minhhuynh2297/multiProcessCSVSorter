@@ -1,0 +1,115 @@
+#include <string.h> 
+#include <dirent.h> 
+#include <stdio.h> 
+#include <unistd.h> 
+#include <sys/types.h> 
+#include "sorter.h"
+int counter = 0; 
+void sort(const char* file, char * colName){
+	int countLL=-1;	
+	char *line; //holds line by line 
+	line = malloc(10000 * sizeof(char));
+	FILE *fp = fopen(file, "r");  
+	if(fp == NULL){
+		printf("File not found\n");
+		exit(-1);
+	}
+	node* head=NULL;
+	node** ptr=&head;
+	fgets(line, 10000, fp);
+	writeFirstRow(ptr, line); 
+	node** oldRow = &head;
+	while(!feof(fp)){
+		if(feof(fp)){
+			break;
+		}
+		fgets(line, 10000, fp);
+		node* newHead=NULL;
+		node** newRow=&newHead;
+		writeLL(newRow,line);	
+		countLL++;
+		connectLL(oldRow, newRow);
+		oldRow=&((*oldRow)->down);
+	} 
+	free(line);
+	node* sortedLL=NULL;
+	node** headLL=&sortedLL;
+	makeSortLL(headLL, ptr, colName);
+	mergeSort(headLL);
+	printBox(headLL, ptr, colName);
+}
+
+void traversal(const char *name, char * colName){ // this is good 
+    DIR *dir;
+    struct dirent *entry;
+	int pid0; 
+	int pid1;
+    if (!(dir = opendir(name))){
+	printf("Error directory could not be opened or does not exist \n");
+		return; 
+        }
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_DIR) { // checks if it a directory wanna fork here
+            char path[1024];
+
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+    		continue;
+		 
+		pid0=fork();
+		if(pid0=0){// this is a child process 
+		printf("%d, ",getpid());
+		char path[1024];
+		snprintf(path,sizeof(path),"%s/%s",name,entry->d_name);
+		traversal(path,colName); // recursively calls on a directory to file other directories or csv files 
+		exit(0);
+		}
+            } 
+		else {// list stuff in directory such as files and checks is its a csv. 
+
+			char *str = entry->d_name;
+			char ch = '.';
+			char *ret;
+			char *csv;
+			csv = ".csv"; 
+			ret = strrchr(str, ch);
+
+					if(strcmp(ret,csv)==0){
+							pid1 = fork();
+							counter++;
+							if(pid1==0){
+							printf("%d, ",getpid());
+							fflush(stdout);
+							char path[1024];
+							snprintf(path,sizeof(path),"%s/%s",name,entry->d_name);
+							char* file = path; 
+							sort(colName,file);// sorts the csv file in a child process 
+							exit(0);
+							}
+					} 
+				
+
+	        }// closed the else 
+    }// closes the while 
+  	if(pid0 !=0){
+		wait(0);
+	}
+	if(pid1 !=0){
+		while(counter>0){
+		wait(0);
+		counter--;
+		}
+	} 
+} //closes the funciton 
+
+
+int main(){
+	printf("Parent ID:%d\n",getpid());
+	printf("Child ID: ");
+	fflush(stdout);
+	char *column= "food";
+	char * directory = "testdir";
+	traversal(directory,column);
+} 
+ 
+
